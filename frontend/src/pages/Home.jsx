@@ -7,57 +7,80 @@ import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 import BooksTable from '../components/home/BooksTable';
 import BooksCard from '../components/home/BooksCard';
+import ReactDataTables from '../components/home/ReactDataTables';
 
 const Home = () => {
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [showType, setShowType] = useState('table');
+    const [books, setBooks] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [showType, setShowType] = useState('table');
 
-  useEffect(() => {
-    setLoading(true);
-    axios
-      .get('http://localhost:5555/books')
-      .then((response) => {
-        setBooks(response.data.data);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
-  }, []);
+    
 
-  return (
-    <div className='p-4'>
-      <div className='flex justify-center items-center gap-x-4'>
-        <button
-          className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
-          onClick={() => setShowType('table')}
-        >
-          Table
-        </button>
-        <button
-          className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
-          onClick={() => setShowType('card')}
-        >
-          Card
-        </button>
-      </div>
-      <div className='flex justify-between items-center'>
-        <h1 className='text-3xl my-8'>Books List</h1>
-        <Link to='/books/create'>
-          <MdOutlineAddBox className='text-sky-800 text-4xl' />
-        </Link>
-      </div>
-      {loading ? (
-        <Spinner />
-      ) : showType === 'table' ? (
-        <BooksTable books={books} />
-      ) : (
-        <BooksCard books={books} />
-      )}
-    </div>
-  );
+    //   const rows = [
+    //     { id: 1, col1: 'Hello', col2: 'World' },
+    //     { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
+    //     { id: 3, col1: 'MUI', col2: 'is Amazing' },
+    //   ];    
+      const columns = [
+        { field: 'title', headerName: 'Title', width: 150 },
+        { field: 'author', headerName: 'Author', width: 150 },
+        { field: 'publishYear', headerName: 'Publish Year', width: 150 },
+        // { data: "title", title: "Title" },
+        // { data: "author", title: "Author" },
+        // { data: "publishYear", title: "Publish Year" },
+      ];
+
+    useEffect(() => {
+        setLoading(true);
+        axios
+            .get('http://localhost:5555/books')
+            .then((response) => {
+                setBooks(response.data.data);
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.log(error);
+                setLoading(false);
+            });
+    }, []);
+
+    return (
+        <div className='p-4'>
+
+            <div className='flex justify-between items-center'>
+                <h1 className='text-3xl my-8'>Books List</h1>
+                <Link to='/books/create'>
+                    <MdOutlineAddBox className='text-sky-800 text-4xl' />
+                </Link>
+            </div>
+            <div className='flex justify-center items-center gap-x-4'>
+                <button
+                    className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
+                    onClick={() => setShowType('table')}
+                >
+                    Table
+                </button>
+                <button
+                    className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
+                    onClick={() => setShowType('card')}
+                >
+                    Card
+                </button>
+                <button
+                    className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
+                    onClick={() => setShowType('datable')}
+                >
+                    React Datatable
+                </button>
+            </div>
+            {
+                loading ? (<Spinner />) 
+                : showType === 'table' ? (<BooksTable books={books} />) 
+                : showType === 'card' ? (<BooksCard books={books} />) 
+                : (<ReactDataTables data={books} columns={columns}/>)
+            }
+        </div>
+    );
 };
 
 export default Home;
