@@ -14,21 +14,6 @@ const Home = () => {
     const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState('table');
 
-    
-
-    //   const rows = [
-    //     { id: 1, col1: 'Hello', col2: 'World' },
-    //     { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
-    //     { id: 3, col1: 'MUI', col2: 'is Amazing' },
-    //   ];    
-      const columns = [
-        { field: 'title', headerName: 'Title', width: 150 },
-        { field: 'author', headerName: 'Author', width: 150 },
-        { field: 'publishYear', headerName: 'Publish Year', width: 150 },
-        // { data: "title", title: "Title" },
-        // { data: "author", title: "Author" },
-        // { data: "publishYear", title: "Publish Year" },
-      ];
 
     useEffect(() => {
         setLoading(true);
