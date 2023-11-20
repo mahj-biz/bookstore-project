@@ -76,8 +76,7 @@ const Home = () => {
             {
                 loading ? (<Spinner />) 
                 : showType === 'table' ? (<BooksTable books={books} />) 
-                : showType === 'card' ? (<BooksCard books={books} />) 
-                : (<ReactDataTables data={books} columns={columns}/>)
+                : (<BooksCard books={books} />)  
             }
         </div>
     );
