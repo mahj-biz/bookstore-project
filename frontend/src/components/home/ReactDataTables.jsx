@@ -44,12 +44,13 @@ const ReactDataTables = ({ ...props }) => {
 
 
     return (
-        <Box sx={{ height: 500, width: '100%' }}>
+        <Box sx={{ height: '50%', width: '100%'}}>
             <DataGrid
                 {...data}
                 disableColumnFilter
                 disableColumnSelector
                 disableDensitySelector
+                disableRowSelectionOnClick
                 columns={columns}
                 slots={{ toolbar: GridToolbar }}
                 slotProps={{
@@ -59,8 +60,7 @@ const ReactDataTables = ({ ...props }) => {
                         csvOptions: { disableToolbarButton: true },
                     },
                 }}
-                pageSizeOptions={[5 , 10 , 25 , 100]}
-
+                pageSizeOptions={[5 , 10 , 25 , 100]} 
             />
         </Box>
 
