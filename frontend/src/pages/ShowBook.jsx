@@ -3,29 +3,48 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import BackButton from '../components/BackButton';
 import Spinner from '../components/Spinner';
+import { getBooks } from '../utils/api/book'
+import { useSnackbar } from 'notistack';
 
 const ShowBook = () => {
   const [book, setBook] = useState({});
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
+  const { enqueueSnackbar } = useSnackbar();
+
+  const fetchBook = async () => {
+    try {
+        const response = await getBooks(id);
+        setBook(response.data.data);
+        setLoading(false);
+        enqueueSnackbar(response.data.message, { variant: 'success' });
+    } catch (error) {
+        //alert(error.response.data.message);
+        console.log(error);
+        enqueueSnackbar(error.response.data.message, { variant: 'error' });
+        setLoading(false);
+    }
+};
+
 
   useEffect(() => {
     setLoading(true);
-    axios
-      .get(`http://localhost:5555/books/${id}`)
-      .then((response) => {
-        setBook(response.data.book);
-        setLoading(false);
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
+    fetchBook();
+    // axios
+    //   .get(`http://localhost:5555/books/${id}`)
+    //   .then((response) => {
+    //     setBook(response.data.book);
+    //     setLoading(false);
+    //   })
+    //   .catch((error) => {
+    //     console.log(error);
+    //     setLoading(false);
+    //   });
   }, []);
 
   return (
     <div className='p-4'>
-      <BackButton />
+      <BackButton destination='/admin' />
       <h1 className='text-3xl my-4'>Book Details</h1>
       {loading ? (
         <Spinner />

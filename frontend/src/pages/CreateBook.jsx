@@ -4,6 +4,7 @@ import Spinner from '../components/Spinner';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
+import { addBooks } from '../utils/api/book'
 
 const CreateBook = () => {
   const [title, setTitle] = useState('');
@@ -13,31 +14,65 @@ const CreateBook = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
-  const handleSaveBook = () => {
+  const handleSubmit = async (e)=>{
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData);
+    //console.log(data);
+    try {
+      const response = await addLinks(data);
+      alert(response.data.message);
+      navigate("/admin");
+    } catch (error) {
+      console.log(error);
+      alert(error.response.data.message);
+    }
+}
+
+
+  const handleSaveBook = async (e) => {
+    e.preventDefault();
     const data = {
       title,
       author,
       publishYear,
     };
     setLoading(true);
-    axios
-      .post('http://localhost:5555/books', data)
-      .then(() => {
-        setLoading(false);
-        enqueueSnackbar('Book Created successfully', { variant: 'success' });
-        navigate('/');
-      })
-      .catch((error) => {
-        setLoading(false);
-        // alert('An error happened. Please Check console');
-        enqueueSnackbar('Error', { variant: 'error' });
-        console.log(error);
-      });
+
+    try {
+      const response = await addBooks(data);
+      //alert(response.data.message);
+      setLoading(false);
+      enqueueSnackbar(response.data.message, { variant: 'success' });
+      navigate("/admin");
+    } catch (error) {
+      console.log(error);
+      enqueueSnackbar(error.response.data.message, { variant: 'error' });
+      //alert(error.response.data.message);
+    }
+
+    // axios
+    //   .post('http://localhost:5555/books', data)
+    //   .then(() => {
+    //     setLoading(false);
+    //     enqueueSnackbar('Book Created successfully', { variant: 'success' });
+    //     navigate('/');
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     // alert('An error happened. Please Check console');
+    //     enqueueSnackbar('Error', { variant: 'error' });
+    //     console.log(error);
+    //   });
+
+
+
   };
 
   return (
     <div className='p-4'>
-      <BackButton />
+      <BackButton destination='/admin' />
       <h1 className='text-3xl my-4'>Create Book</h1>
       {loading ? <Spinner /> : ''}
       <div className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto'>

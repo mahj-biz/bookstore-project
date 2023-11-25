@@ -13,12 +13,15 @@ import Box from '@mui/material/Box';
 import { DataGrid, GridToolbar } from '@mui/x-data-grid';
 import Button from '@mui/material/Button';
 import BookModal from '../components/home/BookModal';
+import { listAllBooks } from '../utils/api/book'
+import { useSnackbar } from 'notistack';
 
 const BookList = () => {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [displayBook, setDisplayBook] = useState([]);
+    const { enqueueSnackbar } = useSnackbar();
 
     var columns = [
         { field: 'title', headerName: 'Title', width: 150, flex: 1 },
@@ -55,13 +58,13 @@ const BookList = () => {
                         className='text-3xl text-blue-800 hover:text-black cursor-pointer'
                         onClick={onClick}
                     />
-                    <Link to={`/books/details/${params.row._id}`}>
+                    <Link to={`/admin/books/details/${params.row._id}`}>
                         <BsInfoCircle className='text-2xl text-green-800' />
                     </Link>
-                    <Link to={`/books/edit/${params.row._id}`}>
+                    <Link to={`/admin/books/edit/${params.row._id}`}>
                         <AiOutlineEdit className='text-2xl text-yellow-600' />
                     </Link>
-                    <Link to={`/books/delete/${params.row._id}`}>
+                    <Link to={`/admin/books/delete/${params.row._id}`}>
                         <MdOutlineDelete className='text-2xl text-red-600' />
                     </Link>
 
@@ -87,19 +90,36 @@ const BookList = () => {
     //     );
     // console.log(data)
 
+    const fetchBooks = async () => {
+        try {
+            const response = await listAllBooks();
+            setBooks(response.data.data);
+            setLoading(false);
+            //enqueueSnackbar('Load success', { variant: 'success' });
+        } catch (error) {
+            //alert(error.response.data.message);
+            enqueueSnackbar(error.response.data.message, { variant: 'error' });
+            console.log(error);
+            setLoading(false);
+            
+        }
+    };
+
+
     useEffect(() => {
         setLoading(true);
-        axios
-            .get('http://localhost:5555/books')
-            .then((response) => {
-                //debugger
-                setBooks(response.data.data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setLoading(false);
-            });
+        fetchBooks()
+        // axios
+        //     .get('http://localhost:5555/books')
+        //     .then((response) => {
+        //         //debugger
+        //         setBooks(response.data.data);
+        //         setLoading(false);
+        //     })
+        //     .catch((error) => {
+        //         console.log(error);
+        //         setLoading(false);
+        //     });
     }, []);
 
     return (
@@ -107,7 +127,7 @@ const BookList = () => {
 
             <div className='flex justify-between items-center'>
                 <h1 className='text-3xl my-8'>Books List</h1>
-                <Link to='/books/create'>
+                <Link to='/admin/books/create'>
                     <MdOutlineAddBox className='text-sky-800 text-4xl' />
                 </Link>
             </div>
